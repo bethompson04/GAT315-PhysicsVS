@@ -1,8 +1,12 @@
 #pragma once
-#include "body.h"
+#include "raylib.h"
 
-extern Body* bodies;
-extern int bodyCount;
+typedef struct btBody btBody; // Forward declaration
 
-Body* CreateBody();
-void DestroyBody(Body* body);
+extern btBody* btBodies;
+extern int btBodyCount;
+extern Vector2 btGravity;
+
+btBody* CreateBody();
+void DestroyBody(btBody* body);
+void DestroyAllBodies();

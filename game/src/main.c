@@ -1,5 +1,6 @@
 #include "world.h"
 #include "mathf.h"
+#include "Integrator.h"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -16,8 +17,11 @@ int main(void)
     InitWindow(1280, 720, "Phsyics engin");
     SetTargetFPS(60);
 
-    Body* currentBody;
+    // Initialize World
+    btGravity = (Vector2){ 0, 30 };
 
+    btBody* currentBody;
+    btBody* body;
 
     // game loop
     while (!WindowShouldClose())
@@ -27,12 +31,34 @@ int main(void)
         float fps = (float)GetFPS();
 
         Vector2 mousePosition = GetMousePosition();
-        if (IsMouseButtonDown (0))
+        if (IsMouseButtonDown(0))
         {
             currentBody = CreateBody();
-
             currentBody->position = mousePosition;
-            currentBody->velocity = CreateVector2(GetRandomFloatValue(-5, 5), GetRandomFloatValue(-5, 5));
+            currentBody->mass = GetRandomFloatValue(1, 5);
+            currentBody->inverseMass = 1 / currentBody->mass;
+            currentBody->damping = 0.2f;
+            currentBody->gravityScale = 20;
+            currentBody->type = BT_DYNAMIC;
+            ApplyForce(currentBody, (Vector2) { GetRandomFloatValue(-100, 100), GetRandomFloatValue(-100, 100)}, FM_VELOCITY);
+        }
+
+        // Apply Force
+        body = btBodies;
+        while (body) // do while there is a valid pointer, will be NULL at the end of the list
+        {
+            // update body position
+            //ApplyForce(body, CreateVector2(0, -100), FM_FORCE);
+            body = body->next;
+        }
+
+        // Update Bodies
+        body = btBodies;
+        while (body) // do while there is a valid pointer, will be NULL at the end of the list
+        {
+            // update body position
+            Step(body, dt);
+            body = body->next; 
         }
 
         // Render
@@ -45,14 +71,12 @@ int main(void)
         DrawCircle((int)mousePosition.x, (int)mousePosition.y, 10.0, YELLOW);
 
 
-        // update / draw bodies
-        Body* body = bodies;
+        // draw bodies
+        body = btBodies;
         while (body) // do while we have a valid pointer, will be NULL at the end of the list
         {
-            // update body position
-            body->position = Vector2Add(body->position, body->velocity);
             // draw body
-            DrawCircleLines((int)body->position.x, (int)body->position.y, 15.0, RED);
+            DrawCircleLines((int)body->position.x, (int)body->position.y, body->mass, RED);
             body = body->next; // get next body
         }
 
@@ -60,7 +84,7 @@ int main(void)
     }
 
     CloseWindow();  // Close window and OpenGL context
-    free(bodies);
+    free(btBodies);
 
     return 0;
 }
