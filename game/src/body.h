@@ -33,6 +33,10 @@ typedef struct btBody
 	float gravityScale;
 	float damping;
 
+	float restitution;
+
+	Color color;
+
 	struct btBody* next;
 	struct btBody* prev;
 

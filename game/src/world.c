@@ -9,7 +9,7 @@ btBody* btBodies = NULL;
 int btBodyCount = 0;
 Vector2 btGravity;
 
-btBody* CreateBody()
+btBody* CreateBody(Vector2 position, float mass, btBodyType bodyType)
 {
 	// Allocating memory for a new Body
 	btBody* body = (btBody*)malloc(sizeof(btBody));
@@ -18,6 +18,22 @@ btBody* CreateBody()
 
 	// Clearing the memory of the body pointer
 	memset(body, 0, sizeof(btBody));
+
+	body->position = position;
+	body->mass = mass;
+	body->inverseMass = (bodyType == BT_DYNAMIC) ? 1 / mass : 0;
+	body->type = bodyType;
+
+	
+
+
+	// Returns the new body
+	return body;
+}
+
+void AddBody(btBody* body)
+{
+	assert(body);
 
 	// New body's prev is NULL
 	body->prev = NULL;
@@ -29,12 +45,10 @@ btBody* CreateBody()
 		// Set the bodies head to the new body's prev
 		btBodies->prev = body->prev;
 	}
-	//Set the bodies to the new Body
+	//Set head of elements to new element
 	btBodies = body;
 	// Increments bodyCount, after adding the body.
 	btBodyCount++;
-	// Returns the new body
-	return body;
 }
 
 void DestroyBody(btBody* body)
