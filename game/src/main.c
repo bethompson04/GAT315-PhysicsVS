@@ -135,7 +135,7 @@ int main(void)
         {
             if (selectedBody && connectBody != selectedBody)
             {
-                btSpring_t* spring = CreateSpring(connectBody, selectedBody, Vector2Distance(connectBody->position, selectedBody->position), 20);
+                btSpring_t* spring = CreateSpring(connectBody, selectedBody, Vector2Distance(connectBody->position, selectedBody->position), btEditorData.StiffnessValue);
                 AddSpring(spring);
             }
         }

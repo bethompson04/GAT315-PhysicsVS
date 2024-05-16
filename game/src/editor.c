@@ -37,6 +37,7 @@ void InitEditor()
     btEditorData.GravityScale = 0.0f;
     btEditorData.DampingValue= 0.0f;
     btEditorData.GravitationValue = 0.0f;
+    btEditorData.StiffnessValue = 0.0f;
 }
 
 void UpdateEditor(Vector2 position)
@@ -57,6 +58,7 @@ void DrawEditor(Vector2 position)
         GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 200, 120, 16 }, "Max Mass", NULL, & btEditorData.MaxMassValue, 0, 100);
         GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 264, 120, 16 }, "Gravity Scale", NULL, & btEditorData.GravityScale, 0, 100);
         GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 232, 120, 16 }, "Damping", NULL, & btEditorData.DampingValue, 0, 100);
+        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 292, 120, 16 }, "Stiffness", NULL, & btEditorData.StiffnessValue, 0, 100);
         GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 368, 120, 16 }, "World GravForce", NULL, & btEditorData.GravitationValue, 0, 100);
         if (GuiDropdownBox((Rectangle) { btEditorData.anchor01.x + 80, btEditorData.anchor01.y + 120, 120, 24 }, "STATIC;KINEMATIC;DYNAMIC", & btEditorData.BodyTypeActive, btEditorData.BodyTypeEditMode)) btEditorData.BodyTypeEditMode = !btEditorData.BodyTypeEditMode;
     }

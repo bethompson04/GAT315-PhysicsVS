@@ -13,6 +13,7 @@ typedef struct btEditorData
     float GravityScale;
     float DampingValue;
     float GravitationValue;
+    float StiffnessValue;
 } btEditorData_t;
 
 extern btEditorData_t btEditorData;
