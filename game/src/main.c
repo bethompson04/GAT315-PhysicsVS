@@ -27,7 +27,7 @@ int main(void)
     SetTargetFPS(60);
 
     // Initialize World
-    btGravity = (Vector2){ 0, 0 };
+    btGravity = (Vector2){ 0, -5 };
 
     btBody* currentBody;
     btBody* body;
@@ -60,7 +60,7 @@ int main(void)
         }
 
         // Create Body
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonDown(MOUSE_BUTTON_LEFT) && IsKeyDown(KEY_Q))
         {
             switch (mode)
             {
@@ -69,7 +69,8 @@ int main(void)
 
                 currentBody->damping = 0.0f;
                 currentBody->gravityScale = 20;
-                currentBody->color = (Color){ 255, 0 , 0, 255 };
+                currentBody->color = (Color){ 255, 100 , 100, 255 };
+                currentBody->restitution = 0.3f;
 
                 AddBody(currentBody);
 
@@ -83,6 +84,7 @@ int main(void)
                     currentBody->damping = 0.9f;
                     currentBody->gravityScale = 10;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
+                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -97,6 +99,7 @@ int main(void)
                     currentBody->damping = 0.80f;
                     currentBody->gravityScale = 5;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
+                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -112,6 +115,7 @@ int main(void)
                     currentBody->damping = 0.80f;
                     currentBody->gravityScale = 5;
                     currentBody->color = (Color){ 255, 255, 0, 255 };
+                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -141,7 +145,7 @@ int main(void)
         }
 
         // Apply Force
-        ApplyGravitation(btBodies, btEditorData.GravitationValue);
+        //ApplyGravitation(btBodies, btEditorData.GravitationValue);
         ApplySpringForce(btSprings);
 
         // Update Bodies
@@ -153,6 +157,8 @@ int main(void)
         // collision
         ncContact_t* contacts = NULL;
         CreateContacts(btBodies, &contacts);
+        SeparateContacts(contacts);
+        ResolveContacts(contacts);
 
         // Render
         BeginDrawing();
@@ -171,7 +177,7 @@ int main(void)
         for (btBody* body = btBodies; body; body = body->next)
         {
             Vector2 screen = ConvertWorldToScreen(body->position);
-            if (mode == 1) DrawRectangle((int)screen.x, (int)screen.y, (int)ConvertWorldToPixel(body->mass), (int)body->mass, body->color);
+            if (mode == 1) DrawRectangle((int)screen.x, (int)screen.y, (int)ConvertWorldToPixel(body->mass), (int)ConvertWorldToPixel(body->mass), body->color);
             else DrawCircle((int)screen.x, (int)screen.y, ConvertWorldToPixel(body->mass * 0.5f), body->color);
             Step(body, dt);
         }
