@@ -8,6 +8,8 @@
 #include "contact.h"
 #include "raylib.h"
 
+#include "stdio.h"
+
 #include <stdlib.h>
 #include <assert.h>
 
@@ -19,8 +21,6 @@
 
 int main(void)
 {
-    float fixedTimeDelta = (1.0f / 60);
-    float timeAccumulator = 0;
 
     btBody* selectedBody = NULL;
     btBody* connectBody = NULL;
@@ -29,8 +29,11 @@ int main(void)
     InitEditor();
     SetTargetFPS(60);
 
+    float fixedTimeDelta = (1.0f / btEditorData.TimeStepValueValue);
+    float timeAccumulator = 0;
+
     // Initialize World
-    btGravity = (Vector2){ 0, -5 };
+    btGravity = (Vector2){ 0, btEditorData.GravitySliderValue };
 
     btBody* currentBody;
     btBody* body;
@@ -40,9 +43,11 @@ int main(void)
     // game loop
     while (!WindowShouldClose())
     {
+
         // Update
         float dt = GetFrameTime();
         float fps = (float)GetFPS();
+        fixedTimeDelta = (1.0f / btEditorData.TimeStepValueValue);
         if (IsKeyPressed(KEY_TAB))
         {
             if (mode < 3) mode++;
@@ -71,7 +76,7 @@ int main(void)
                 currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
                 currentBody->damping = btEditorData.DampingSliderValue;
-                currentBody->gravityScale = btEditorData.GravitySliderValue;
+                currentBody->gravityScale = btEditorData.GravityScaleValue;
                 currentBody->restitution = btEditorData.RestitutionSliderValue;
                 currentBody->color = (Color){ 255, 100 , 100, 255 };
 
@@ -85,7 +90,7 @@ int main(void)
                     currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
  
                     currentBody->damping = btEditorData.DampingSliderValue;
-                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->gravityScale = btEditorData.GravityScaleValue;
                     currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
 
@@ -100,7 +105,7 @@ int main(void)
                     currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
                     currentBody->damping = btEditorData.DampingSliderValue;
-                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->gravityScale = btEditorData.GravityScaleValue;
                     currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
 
@@ -116,7 +121,7 @@ int main(void)
                     currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
                     currentBody->damping = btEditorData.DampingSliderValue;
-                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->gravityScale = btEditorData.GravityScaleValue;
                     currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ 255, 255, 0, 255 };
 
@@ -151,6 +156,8 @@ int main(void)
 
         // Fixed Physics Update
         timeAccumulator = timeAccumulator + fixedTimeDelta;
+        printf(TextFormat("%0.2f\n", fixedTimeDelta), &fixedTimeDelta);
+        printf(TextFormat("%0.2f\n", timeAccumulator), &timeAccumulator);
         while (timeAccumulator >= fixedTimeDelta && btEditorData.SimulateToggleActive)
         {
             timeAccumulator = timeAccumulator - fixedTimeDelta;
@@ -162,7 +169,9 @@ int main(void)
             // Update Bodies
             for (btBody* body = btBodies; body; body = body->next)
             {
-                Step(body, timeAccumulator);
+                Step(body, fixedTimeDelta);
+                
+                
             }
 
             // collision

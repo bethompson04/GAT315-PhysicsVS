@@ -5,7 +5,7 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../../raygui/src/raygui.h"
 
-#define EDITOR_DATA(data) TextFormat("%0.2f", data), &data;
+#define EDITOR_DATA(data) TextFormat("%0.2f", data), &data
 
 bool ncEditorActive = true;
 bool ncEditorIntersect = false;
@@ -32,16 +32,16 @@ void InitEditor()
     btEditorData.anchor01 = (Vector2){ 808, 48 };
 
     btEditorData.WindowBox000Active = true;
-    btEditorData.MassSliderValue = 0.0f;
-    btEditorData.DampingSliderValue = 0.0f;
-    btEditorData.GravitySliderValue = 0.0f;
-    btEditorData.RestitutionSliderValue = 0.0f;
-    btEditorData.StiffnessSliderValue = 0.0f;
     btEditorData.BodyTypeDropdownEditMode = false;
-    btEditorData.BodyTypeDropdownActive = 0;
-    btEditorData.GravityScaleValue = 0.0f;
+    btEditorData.MassSliderValue = 5.0f;
+    btEditorData.DampingSliderValue = 1.0f;
+    btEditorData.RestitutionSliderValue = 1.0f;
+    btEditorData.GravityScaleValue = 1.0f;
+    btEditorData.StiffnessSliderValue = 1.0f;
+    btEditorData.BodyTypeDropdownActive = 2;
     btEditorData.GravitationScaleValue = 0.0f;
-    btEditorData.TimeStepValueValue = 0.0f;
+    btEditorData.GravitySliderValue = -30.0f;
+    btEditorData.TimeStepValueValue = 60.0f;
     btEditorData.SimulateToggleActive = true;
     btEditorData.ResetButtonPressed = false;
 }
@@ -59,16 +59,16 @@ void DrawEditor(Vector2 position)
     if (btEditorData.WindowBox000Active)
     {
         btEditorData.WindowBox000Active = !GuiWindowBox((Rectangle){ 840, 24, 264, 424 }, "Editor");
-        GuiSliderBar((Rectangle){ 928, 112, 120, 16 }, "Mass", NULL, &btEditorData.MassSliderValue, 0, 100);
-        GuiSliderBar((Rectangle){ 928, 136, 120, 16 }, "Damping", NULL, &btEditorData.DampingSliderValue, 0, 100);
-        GuiSliderBar((Rectangle){ 928, 160, 120, 16 }, "GravityScale", NULL, &btEditorData.GravitySliderValue, 0, 100);
-        GuiSliderBar((Rectangle){ 928, 208, 120, 16 }, "Restitution", NULL, &btEditorData.RestitutionSliderValue, 0, 100);
-        GuiSliderBar((Rectangle){ 928, 184, 120, 16 }, "Stiffness", NULL, &btEditorData.StiffnessSliderValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 112, 120, 16 }, "Mass", EDITOR_DATA(btEditorData.MassSliderValue), 0, 100);
+        GuiSliderBar((Rectangle){ 928, 136, 120, 16 }, "Damping", EDITOR_DATA(btEditorData.DampingSliderValue), 0, 100);
+        GuiSliderBar((Rectangle){ 928, 160, 120, 16 }, "GravityScale", EDITOR_DATA(btEditorData.GravitySliderValue), 0, 100);
+        GuiSliderBar((Rectangle){ 928, 208, 120, 16 }, "Restitution", EDITOR_DATA(btEditorData.RestitutionSliderValue), 0, 100);
+        GuiSliderBar((Rectangle){ 928, 184, 120, 16 }, "Stiffness", EDITOR_DATA(btEditorData.StiffnessSliderValue), 0, 100);
         GuiGroupBox((Rectangle){ 848, 64, 248, 184 }, "BODY");
         GuiGroupBox((Rectangle){ 848, 264, 248, 120 }, "WORLD");
-        GuiSlider((Rectangle){ 928, 296, 120, 16 }, "Gravity", NULL, & btEditorData.GravityScaleValue, 0, 100);
-        GuiSlider((Rectangle){ 928, 320, 120, 16 }, "Gravitation", NULL, & btEditorData.GravitationScaleValue, 0, 100);
-        GuiSliderBar((Rectangle){ 928, 344, 120, 16 }, "TimeStep", NULL, & btEditorData.TimeStepValueValue, 0, 100);
+        GuiSlider((Rectangle){ 928, 296, 120, 16 }, "Gravity", EDITOR_DATA(btEditorData.GravityScaleValue), -100, 100);
+        GuiSlider((Rectangle){ 928, 320, 120, 16 }, "Gravitation", EDITOR_DATA(btEditorData.GravitationScaleValue), -100, 100);
+        GuiSliderBar((Rectangle){ 928, 344, 120, 16 }, "TimeStep", EDITOR_DATA(btEditorData.TimeStepValueValue), 1, 120);
         btEditorData.ResetButtonPressed = GuiButton((Rectangle){ 864, 408, 96, 24 }, "RESET");
         if (GuiDropdownBox((Rectangle){ 920, 72, 136, 24 }, "STATIC;KINEMATIC;DYNAMIC", & btEditorData.BodyTypeDropdownActive, btEditorData.BodyTypeDropdownEditMode)) btEditorData.BodyTypeDropdownEditMode = !btEditorData.BodyTypeDropdownEditMode;
     }
