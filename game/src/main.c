@@ -19,6 +19,11 @@
 
 int main(void)
 {
+    float fixedTimeDelta = (1.0f / 60);
+    float timeAccumulator = 0;
+
+    bool updatePhysics = true;
+
     btBody* selectedBody = NULL;
     btBody* connectBody = NULL;
 
@@ -70,7 +75,7 @@ int main(void)
                 currentBody->damping = 0.0f;
                 currentBody->gravityScale = 20;
                 currentBody->color = (Color){ 255, 100 , 100, 255 };
-                currentBody->restitution = 0.3f;
+                currentBody->restitution = 0.5f;
 
                 AddBody(currentBody);
 
@@ -143,22 +148,33 @@ int main(void)
                 AddSpring(spring);
             }
         }
+           
+        ncContact_t* contacts = NULL;
 
-        // Apply Force
-        //ApplyGravitation(btBodies, btEditorData.GravitationValue);
-        ApplySpringForce(btSprings);
-
-        // Update Bodies
-        for (btBody* body = btBodies; body; body = body->next)
+        // Fixed Physics Update
+        timeAccumulator = timeAccumulator + fixedTimeDelta;
+        while (timeAccumulator >= fixedTimeDelta && updatePhysics)
         {
-            Step(body, dt);
+            timeAccumulator = timeAccumulator - fixedTimeDelta;
+
+            // Apply Force
+            //ApplyGravitation(btBodies, btEditorData.GravitationValue);
+            ApplySpringForce(btSprings);
+
+            // Update Bodies
+            for (btBody* body = btBodies; body; body = body->next)
+            {
+                Step(body, dt);
+            }
+
+            // collision
+            CreateContacts(btBodies, &contacts);
+            SeparateContacts(contacts);
+            ResolveContacts(contacts);
         }
 
-        // collision
-        ncContact_t* contacts = NULL;
-        CreateContacts(btBodies, &contacts);
-        SeparateContacts(contacts);
-        ResolveContacts(contacts);
+
+
 
         // Render
         BeginDrawing();

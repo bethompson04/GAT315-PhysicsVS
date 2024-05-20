@@ -5,6 +5,8 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../../raygui/src/raygui.h"
 
+#define EDITOR_DATA(data) TextFormat("%0.2f", data), &data;
+
 bool ncEditorActive = true;
 bool ncEditorIntersect = false;
 Rectangle editorRect;
