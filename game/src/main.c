@@ -22,8 +22,6 @@ int main(void)
     float fixedTimeDelta = (1.0f / 60);
     float timeAccumulator = 0;
 
-    bool updatePhysics = true;
-
     btBody* selectedBody = NULL;
     btBody* connectBody = NULL;
 
@@ -70,12 +68,12 @@ int main(void)
             switch (mode)
             {
             case 0:
-                currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MinMassValue, btEditorData.BodyTypeActive);
+                currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
-                currentBody->damping = 0.0f;
-                currentBody->gravityScale = 20;
+                currentBody->damping = btEditorData.DampingSliderValue;
+                currentBody->gravityScale = btEditorData.GravitySliderValue;
+                currentBody->restitution = btEditorData.RestitutionSliderValue;
                 currentBody->color = (Color){ 255, 100 , 100, 255 };
-                currentBody->restitution = 0.5f;
 
                 AddBody(currentBody);
 
@@ -84,12 +82,12 @@ int main(void)
             case 1:
                 for (int i = 0; i < 10; i++)
                 {
-                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MinMassValue, btEditorData.BodyTypeActive);
+                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
  
-                    currentBody->damping = 0.9f;
-                    currentBody->gravityScale = 10;
+                    currentBody->damping = btEditorData.DampingSliderValue;
+                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
-                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -99,12 +97,12 @@ int main(void)
             case 2:
                 for (int i = 0; i < 15; i++)
                 {
-                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MinMassValue, btEditorData.BodyTypeActive);
+                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
-                    currentBody->damping = 0.80f;
-                    currentBody->gravityScale = 5;
+                    currentBody->damping = btEditorData.DampingSliderValue;
+                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255),  GetRandomFloatValue(0, 255), 255 };
-                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -115,12 +113,12 @@ int main(void)
             case 3:
                 for (int i = 0; i < 2; i++)
                 {
-                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MinMassValue, btEditorData.BodyTypeActive);
+                    currentBody = CreateBody(ConvertScreenToWorld(mousePosition), btEditorData.MassSliderValue, btEditorData.BodyTypeDropdownActive);
 
-                    currentBody->damping = 0.80f;
-                    currentBody->gravityScale = 5;
+                    currentBody->damping = btEditorData.DampingSliderValue;
+                    currentBody->gravityScale = btEditorData.GravitySliderValue;
+                    currentBody->restitution = btEditorData.RestitutionSliderValue;
                     currentBody->color = (Color){ 255, 255, 0, 255 };
-                    currentBody->restitution = 0.3f;
 
                     AddBody(currentBody);
 
@@ -144,7 +142,7 @@ int main(void)
         {
             if (selectedBody && connectBody != selectedBody)
             {
-                btSpring_t* spring = CreateSpring(connectBody, selectedBody, Vector2Distance(connectBody->position, selectedBody->position), btEditorData.StiffnessValue);
+                btSpring_t* spring = CreateSpring(connectBody, selectedBody, Vector2Distance(connectBody->position, selectedBody->position), btEditorData.StiffnessSliderValue);
                 AddSpring(spring);
             }
         }
@@ -153,18 +151,18 @@ int main(void)
 
         // Fixed Physics Update
         timeAccumulator = timeAccumulator + fixedTimeDelta;
-        while (timeAccumulator >= fixedTimeDelta && updatePhysics)
+        while (timeAccumulator >= fixedTimeDelta && btEditorData.SimulateToggleActive)
         {
             timeAccumulator = timeAccumulator - fixedTimeDelta;
 
             // Apply Force
-            //ApplyGravitation(btBodies, btEditorData.GravitationValue);
+            ApplyGravitation(btBodies, btEditorData.GravitationScaleValue);
             ApplySpringForce(btSprings);
 
             // Update Bodies
             for (btBody* body = btBodies; body; body = body->next)
             {
-                Step(body, dt);
+                Step(body, timeAccumulator);
             }
 
             // collision

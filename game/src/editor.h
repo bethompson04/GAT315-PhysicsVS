@@ -5,15 +5,19 @@ typedef struct btEditorData
 {
     Vector2 anchor01;
 
-    bool EditBoxActive;
-    bool BodyTypeEditMode;
-    int BodyTypeActive;
-    float MinMassValue;
-    float MaxMassValue;
-    float GravityScale;
-    float DampingValue;
-    float GravitationValue;
-    float StiffnessValue;
+    bool WindowBox000Active;
+    float MassSliderValue;
+    float DampingSliderValue;
+    float GravitySliderValue;
+    float RestitutionSliderValue;
+    float StiffnessSliderValue;
+    bool BodyTypeDropdownEditMode;
+    int BodyTypeDropdownActive;
+    float GravityScaleValue;
+    float GravitationScaleValue;
+    float TimeStepValueValue;
+    bool SimulateToggleActive;
+    bool ResetButtonPressed;
 } btEditorData_t;
 
 extern btEditorData_t btEditorData;

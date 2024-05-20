@@ -31,15 +31,19 @@ void InitEditor()
 
     btEditorData.anchor01 = (Vector2){ 808, 48 };
 
-    btEditorData.EditBoxActive = true;
-    btEditorData.BodyTypeEditMode = false;
-    btEditorData.BodyTypeActive = 3;
-    btEditorData.MinMassValue = 1.0f;
-    btEditorData.MaxMassValue = 2.0f;
-    btEditorData.GravityScale = 0.0f;
-    btEditorData.DampingValue= 0.0f;
-    btEditorData.GravitationValue = 0.0f;
-    btEditorData.StiffnessValue = 0.0f;
+    btEditorData.WindowBox000Active = true;
+    btEditorData.MassSliderValue = 0.0f;
+    btEditorData.DampingSliderValue = 0.0f;
+    btEditorData.GravitySliderValue = 0.0f;
+    btEditorData.RestitutionSliderValue = 0.0f;
+    btEditorData.StiffnessSliderValue = 0.0f;
+    btEditorData.BodyTypeDropdownEditMode = false;
+    btEditorData.BodyTypeDropdownActive = 0;
+    btEditorData.GravityScaleValue = 0.0f;
+    btEditorData.GravitationScaleValue = 0.0f;
+    btEditorData.TimeStepValueValue = 0.0f;
+    btEditorData.SimulateToggleActive = true;
+    btEditorData.ResetButtonPressed = false;
 }
 
 void UpdateEditor(Vector2 position)
@@ -50,21 +54,26 @@ void UpdateEditor(Vector2 position)
 void DrawEditor(Vector2 position)
 {
 
-    if (btEditorData.BodyTypeEditMode) GuiLock();
+    if (btEditorData.BodyTypeDropdownEditMode) GuiLock();
 
-    if (btEditorData.EditBoxActive)
+    if (btEditorData.WindowBox000Active)
     {
-        btEditorData.EditBoxActive = !GuiWindowBox((Rectangle) { btEditorData.anchor01.x + 8, btEditorData.anchor01.y + 0, 264, 472 }, "SAMPLE TEXT");
-        GuiGroupBox((Rectangle) { btEditorData.anchor01.x + 32, btEditorData.anchor01.y + 96, 216, 240 }, "BODY");
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 168, 120, 16 }, "Min Mass", NULL, & btEditorData.MinMassValue, 0, 100);
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 200, 120, 16 }, "Max Mass", NULL, & btEditorData.MaxMassValue, 0, 100);
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 264, 120, 16 }, "Gravity Scale", NULL, & btEditorData.GravityScale, 0, 100);
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 232, 120, 16 }, "Damping", NULL, & btEditorData.DampingValue, 0, 100);
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 292, 120, 16 }, "Stiffness", NULL, & btEditorData.StiffnessValue, 0, 100);
-        GuiSliderBar((Rectangle) { btEditorData.anchor01.x + 120, btEditorData.anchor01.y + 368, 120, 16 }, "World GravForce", NULL, & btEditorData.GravitationValue, 0, 100);
-        if (GuiDropdownBox((Rectangle) { btEditorData.anchor01.x + 80, btEditorData.anchor01.y + 120, 120, 24 }, "STATIC;KINEMATIC;DYNAMIC", & btEditorData.BodyTypeActive, btEditorData.BodyTypeEditMode)) btEditorData.BodyTypeEditMode = !btEditorData.BodyTypeEditMode;
+        btEditorData.WindowBox000Active = !GuiWindowBox((Rectangle){ 840, 24, 264, 424 }, "Editor");
+        GuiSliderBar((Rectangle){ 928, 112, 120, 16 }, "Mass", NULL, &btEditorData.MassSliderValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 136, 120, 16 }, "Damping", NULL, &btEditorData.DampingSliderValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 160, 120, 16 }, "GravityScale", NULL, &btEditorData.GravitySliderValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 208, 120, 16 }, "Restitution", NULL, &btEditorData.RestitutionSliderValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 184, 120, 16 }, "Stiffness", NULL, &btEditorData.StiffnessSliderValue, 0, 100);
+        GuiGroupBox((Rectangle){ 848, 64, 248, 184 }, "BODY");
+        GuiGroupBox((Rectangle){ 848, 264, 248, 120 }, "WORLD");
+        GuiSlider((Rectangle){ 928, 296, 120, 16 }, "Gravity", NULL, & btEditorData.GravityScaleValue, 0, 100);
+        GuiSlider((Rectangle){ 928, 320, 120, 16 }, "Gravitation", NULL, & btEditorData.GravitationScaleValue, 0, 100);
+        GuiSliderBar((Rectangle){ 928, 344, 120, 16 }, "TimeStep", NULL, & btEditorData.TimeStepValueValue, 0, 100);
+        btEditorData.ResetButtonPressed = GuiButton((Rectangle){ 864, 408, 96, 24 }, "RESET");
+        if (GuiDropdownBox((Rectangle){ 920, 72, 136, 24 }, "STATIC;KINEMATIC;DYNAMIC", & btEditorData.BodyTypeDropdownActive, btEditorData.BodyTypeDropdownEditMode)) btEditorData.BodyTypeDropdownEditMode = !btEditorData.BodyTypeDropdownEditMode;
     }
-
+    GuiToggle((Rectangle){ 984, 408, 96, 24 }, "SIMULATE", & btEditorData.SimulateToggleActive);
+    
     GuiUnlock();
 
     DrawTexture(cursorTexture, (int)position.x, (int)position.y, WHITE);
